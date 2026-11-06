@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+/* ABC English – Sắc màu tươi sáng, hiện đại, chuẩn trung tâm Anh ngữ quốc tế.
+ * Tông xanh biển tự tin (Royal Blue/Indigo), điểm xuyết cam san hô (Coral) và vàng nắng ấm áp (Sun). */
+@theme {
+  --font-sans: "Be Vietnam Pro", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-display: "Fraunces", "Be Vietnam Pro", Georgia, serif;
+
+  --color-brand: #2563eb;
+  --color-brand-hover: #1d4ed8;
+  --color-brand-light: #60a5fa;
+  --color-ink: #0f172a;
+  --color-paper: #f8fafc;
+  --color-clay: #f97316;
+  --color-sun: #f59e0b;
+
+  --color-blue-50: #eff6ff; --color-blue-100: #dbeafe; --color-blue-200: #bfdbfe; --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa; --color-blue-500: #3b82f6; --color-blue-600: #2563eb; --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af; --color-blue-900: #1e3a8a; --color-blue-950: #172554;
+
+  --color-indigo-50: #eef2ff; --color-indigo-100: #e0e7ff; --color-indigo-200: #c7d2fe; --color-indigo-300: #a5b4fc;
+  --color-indigo-400: #818cf8; --color-indigo-500: #6366f1; --color-indigo-600: #4f46e5; --color-indigo-700: #4338ca;
+  --color-indigo-800: #3730a3; --color-indigo-900: #312e81; --color-indigo-950: #1e1b4b;
+
+  --color-violet-50: #f5f3ff; --color-violet-100: #ede9fe; --color-violet-200: #ddd6fe; --color-violet-300: #c4b5fd;
+  --color-violet-400: #a78bfa; --color-violet-500: #8b5cf6; --color-violet-600: #7c3aed; --color-violet-700: #6d28d9;
+  --color-violet-800: #5b21b6; --color-violet-900: #4c1d95; --color-violet-950: #2e1065;
+
+  --color-slate-50: #f8fafc; --color-slate-100: #f1f5f9; --color-slate-200: #e2e8f0; --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8; --color-slate-500: #64748b; --color-slate-600: #475569; --color-slate-700: #334155;
+  --color-slate-800: #1e293b; --color-slate-900: #0f172a; --color-slate-950: #020617;
+
+  --animate-fade-in: fade-in .3s ease-out both;
+  --animate-fade-up: fade-up .5s cubic-bezier(.16, 1, .3, 1) both;
+  --animate-pop: pop .3s cubic-bezier(.34, 1.56, .64, 1) both;
+  --animate-toast: fade-up .35s cubic-bezier(.16, 1, .3, 1) both;
+  --animate-grow: grow 1s cubic-bezier(.16, 1, .3, 1) both;
+  --animate-marquee: marquee 45s linear infinite;
+  --animate-float: float 4s ease-in-out infinite;
+  --animate-pulse-subtle: pulse-subtle 3s ease-in-out infinite;
+  --animate-slide-in-left: slide-in-left .6s cubic-bezier(.16,1,.3,1) both;
+  --animate-slide-in-right: slide-in-right .6s cubic-bezier(.16,1,.3,1) both;
+}
+
+@keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
+@keyframes fade-up { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
+@keyframes pop { from { opacity: 0; transform: scale(.94) } to { opacity: 1; transform: none } }
+@keyframes grow { from { width: 0 } }
+@keyframes marquee { to { transform: translateX(-50%) } }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .85; transform: scale(1.02); }
+}
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-paper);
+  background-image: 
+    radial-gradient(at 10% 20%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(245, 158, 11, 0.04) 0px, transparent 50%),
+    radial-gradient(at 80% 80%, rgba(99, 102, 241, 0.04) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, .font-display {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 50;
+  letter-spacing: -.02em;
+}
+
+::selection {
+  background: #bfdbfe;
+  color: #1e3a8a;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* Hiệu ứng nền kính & đổ bóng nhẹ nhàng */
+.glass-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.highlight {
+  background: linear-gradient(transparent 65%, rgba(254, 240, 138, 0.75) 65% 95%, transparent 95%);
+}
+
+/* Thanh cuộn hiện đại mảnh mai */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff !important; }
+}
