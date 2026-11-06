@@ -95,7 +95,7 @@ function LeadForm({ compact, buttonText = 'ĐĂNG KÝ TƯ VẤN NGAY' }) {
   );
 }
 
-/* ── Dữ liệu giảng viên tiêu biểu ───────────────────────────────── */
+/* ── Dữ liệu giảng viên tiêu biểu (ảnh chân dung thật từ IELTS Fighter) ── */
 const TEACHERS_HIGHLIGHT = [
   {
     name: 'Ms. Băng Thương',
@@ -103,7 +103,7 @@ const TEACHERS_HIGHLIGHT = [
     tag: 'Sweet Fighter',
     exp: '6 năm kinh nghiệm luyện thi',
     desc: 'Cựu sinh viên ĐH Ngoại Thương, truyền cảm hứng cho hơn 2,000 học viên đạt 7.0+.',
-    img: 'https://w.ladicdn.com/s650x550/5b57f38472976020da8e5611/dn-1-20220227102608.png'
+    img: 'https://w.ladicdn.com/s500x600/5b57f38472976020da8e5611/msthuong-20220927075909-z9llr.jpg'
   },
   {
     name: 'Mr. Hoàng Nam',
@@ -111,7 +111,7 @@ const TEACHERS_HIGHLIGHT = [
     tag: 'Cheerful Fighter',
     exp: '8 năm kinh nghiệm giảng dạy',
     desc: 'Thạc sĩ Ngôn ngữ học ứng dụng, chuyên gia chiến thuật Writing & Speaking thực chiến.',
-    img: 'https://w.ladicdn.com/s400x400/5b57f38472976020da8e5611/hv1-20220301035922.jpg'
+    img: 'https://w.ladicdn.com/s500x600/5b57f38472976020da8e5611/mrnam-20220923103600-_ky1x.jpg'
   },
   {
     name: 'Ms. Trang Chuối',
@@ -119,7 +119,7 @@ const TEACHERS_HIGHLIGHT = [
     tag: 'Dynamic Fighter',
     exp: '5 năm kinh nghiệm',
     desc: 'Phương pháp dạy tương tác, phản xạ nhanh, giúp học viên mất gốc tự tin nói trôi chảy.',
-    img: 'https://w.ladicdn.com/s400x400/5b57f38472976020da8e5611/hv2-20220301035922.jpg'
+    img: 'https://w.ladicdn.com/s500x600/5b57f38472976020da8e5611/mstrang-20220927081018-qk4ou.jpg'
   },
   {
     name: 'Ms. Võ Yến Nhi',
@@ -127,7 +127,7 @@ const TEACHERS_HIGHLIGHT = [
     tag: 'Positive Fighter',
     exp: '5 năm kinh nghiệm',
     desc: 'Chuyên gia xử lý phát âm chuẩn IPA và tư duy logic trong bài đọc Reading.',
-    img: 'https://w.ladicdn.com/s400x400/5b57f38472976020da8e5611/hv3-20220301035922.jpg'
+    img: 'https://w.ladicdn.com/s500x600/5b57f38472976020da8e5611/msnhi-20220923103335-h3mex.jpg'
   }
 ];
 
@@ -170,14 +170,50 @@ const ROADMAP_STEPS = [
   }
 ];
 
-/* ── Gallery bảng vàng học viên ──────────────────────────────────── */
+/* ── Gallery bảng vàng bảng điểm IELTS học viên ─────────────────── */
 const HIGHSCORE_STUDENTS = [
-  { name: 'Nguyễn Minh Châu', score: '8.0 IELTS', school: 'ĐH Ngoại Thương', img: 'https://w.ladicdn.com/s400x400/5b57f38472976020da8e5611/hv1-20220301035922.jpg' },
-  { name: 'Trần Quốc Bảo', score: '7.5 IELTS', school: 'ĐH Bách Khoa HN', img: 'https://w.ladicdn.com/s400x400/5b57f38472976020da8e5611/hv2-20220301035922.jpg' },
-  { name: 'Lê Hoàng Yến', score: '7.5 IELTS', school: 'THPT Chu Văn An', img: 'https://w.ladicdn.com/s400x400/5b57f38472976020da8e5611/hv3-20220301035922.jpg' },
-  { name: 'Phạm Đức Anh', score: '8.0 IELTS', school: 'ĐH Kinh Tế Quốc Dân', img: 'https://w.ladicdn.com/s400x400/5b57f38472976020da8e5611/hv4-20220301035922.jpg' },
-  { name: 'Vũ Mai Phương', score: '7.0 IELTS', school: 'ĐH Quốc Gia Hà Nội', img: 'https://w.ladicdn.com/s400x400/5b57f38472976020da8e5611/hv5-20220301035922.jpg' },
-  { name: 'Đặng Tuấn Kiệt', score: '7.5 IELTS', school: 'THPT Kim Liên', img: 'https://w.ladicdn.com/s400x400/5b57f38472976020da8e5611/hv6-20220301035922.jpg' },
+  {
+    name: 'Nguyễn Minh Châu',
+    score: '8.0 IELTS',
+    school: 'ĐH Ngoại Thương',
+    sub: 'L: 8.5 · R: 8.5 · W: 7.5 · S: 7.5',
+    img: 'https://w.ladicdn.com/s650x500/5b57f38472976020da8e5611/hv1-20220301035922.jpg'
+  },
+  {
+    name: 'Trần Quốc Bảo',
+    score: '7.5 IELTS',
+    school: 'ĐH Bách Khoa HN',
+    sub: 'L: 8.0 · R: 7.5 · W: 7.0 · S: 7.0',
+    img: 'https://w.ladicdn.com/s650x500/5b57f38472976020da8e5611/hv2-20220301035922.jpg'
+  },
+  {
+    name: 'Lê Hoàng Yến',
+    score: '7.5 IELTS',
+    school: 'THPT Chu Văn An',
+    sub: 'L: 8.0 · R: 8.0 · W: 7.0 · S: 6.5',
+    img: 'https://w.ladicdn.com/s650x500/5b57f38472976020da8e5611/hv3-20220301035922.jpg'
+  },
+  {
+    name: 'Phạm Đức Anh',
+    score: '8.0 IELTS',
+    school: 'ĐH Kinh Tế Quốc Dân',
+    sub: 'L: 8.5 · R: 8.5 · W: 7.0 · S: 7.5',
+    img: 'https://w.ladicdn.com/s650x500/5b57f38472976020da8e5611/hv4-20220301035922.jpg'
+  },
+  {
+    name: 'Vũ Mai Phương',
+    score: '7.0 IELTS',
+    school: 'ĐH Quốc Gia Hà Nội',
+    sub: 'L: 7.5 · R: 7.0 · W: 6.5 · S: 7.0',
+    img: 'https://w.ladicdn.com/s650x500/5b57f38472976020da8e5611/hv5-20220301035922.jpg'
+  },
+  {
+    name: 'Đặng Tuấn Kiệt',
+    score: '7.5 IELTS',
+    school: 'THPT Kim Liên',
+    sub: 'L: 8.0 · R: 7.5 · W: 7.0 · S: 7.0',
+    img: 'https://w.ladicdn.com/s650x500/5b57f38472976020da8e5611/hv6-20220301035922.jpg'
+  },
 ];
 
 /* ══════════════════════════════════════════════════════════════════
@@ -789,14 +825,36 @@ export function Landing() {
             <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-red-600" />
           </Reveal>
 
-          {/* Lưới hình ảnh học viên đạt điểm cao (Hv1 - Hv6) */}
-          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          {/* Lưới chứng chỉ / Bảng vàng điểm cao IELTS (Khung chữ nhật rõ nét, đúng chuẩn bảng điểm) */}
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {HIGHSCORE_STUDENTS.map((st, i) => (
-              <div key={i} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-xs hover:shadow-md transition-all">
-                <RealImg src={st.img} alt={st.name} className="mx-auto size-24 rounded-full object-cover border-2 border-red-600" />
-                <b className="mt-3 block truncate text-xs font-bold text-slate-900">{st.name}</b>
-                <span className="mt-0.5 block text-xs font-black text-red-600">{st.score}</span>
-                <span className="mt-0.5 block truncate text-[10px] text-slate-400">{st.school}</span>
+              <div key={i} className="group overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-4 shadow-sm hover:border-red-600 hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+                {/* Khung hiển thị bảng điểm IELTS chữ nhật chuẩn */}
+                <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                  <RealImg
+                    src={st.img}
+                    alt={`Bảng điểm IELTS ${st.name}`}
+                    className="h-48 w-full object-contain bg-white p-1 group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <span className="absolute top-2.5 right-2.5 rounded-md bg-red-600 px-2.5 py-1 text-xs font-black text-white shadow-md">
+                    {st.score}
+                  </span>
+                </div>
+
+                <div className="mt-4 pt-1">
+                  <div className="flex items-center justify-between">
+                    <b className="text-base font-black text-slate-900 group-hover:text-red-600 transition-colors">
+                      {st.name}
+                    </b>
+                    <span className="rounded-md bg-red-50 border border-red-200 px-2 py-0.5 text-xs font-black text-red-600">
+                      {st.score}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 flex items-center justify-between text-xs text-slate-500">
+                    <span className="font-medium text-slate-600">{st.school}</span>
+                    <span className="font-bold text-slate-700">{st.sub}</span>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -999,7 +1057,7 @@ export function Login() {
             <div className="mt-8 rounded-2xl bg-white/90 p-4.5 backdrop-blur-xs border border-white shadow-lg max-w-sm">
               <div className="flex items-center gap-3 mb-2">
                 <RealImg
-                  src="https://w.ladicdn.com/s400x400/5b57f38472976020da8e5611/hv1-20220301035922.jpg"
+                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
                   alt="Minh Châu"
                   className="size-11 rounded-full object-cover border-2 border-red-600"
                 />
