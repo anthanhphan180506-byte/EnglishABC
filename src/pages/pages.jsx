@@ -7,8 +7,11 @@ import { by, vnd, dmy, TYPE, ROLE, reqDesc, enLabel, canViewClass } from '../lib
 import { CancelForm, RescheduleForm, VoidForm, RefundForm, FinishForm, NewClassForm, ClassEditForm, ScheduleForm, EnrollForm, PayForm, ReserveForm, TransferForm, MakeupForm, RejectForm } from '../forms.jsx';
 
 export const Head = ({ title, children }) => (
-  <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-    <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-3">{title}</h1>
+  <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/80 pb-4">
+    <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 flex items-center gap-3">
+      <span className="w-2 h-7 rounded-full bg-red-600 inline-block shadow-sm shadow-red-600/30" />
+      <span>{title}</span>
+    </h1>
     <div className="flex flex-wrap items-center gap-2">{children}</div>
   </div>
 );
@@ -18,91 +21,192 @@ const statuses = (a) => a.map((s) => [s, s]);
 
 /* ---------------- Tổng quan ---------------- */
 export function Dashboard() {
-  const { db, user } = useStore();
+  const { db, user, openModal } = useStore();
   const today = U.today(), month = today.slice(0, 7);
+
   if (user.role === 'teacher') {
     const mine = db.sessions.filter((s) => s.teacherId === user.teacherId && s.date >= today).sort((a, b) => a.date.localeCompare(b.date) || a.start.localeCompare(b.start)).slice(0, 8);
+    const todaySessions = mine.filter((s) => s.date === today);
     return (
       <>
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 p-6 md:p-8 text-white shadow-lg mb-8">
+        {/* Banner Giảng viên */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 p-6 md:p-8 text-white shadow-xl mb-8 border border-blue-900/40">
           <div className="relative z-10 flex flex-wrap items-center justify-between gap-6">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1 text-xs font-semibold backdrop-blur-xs text-blue-100 mb-2 border border-white/20">
-                <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Giáo viên · {dmy(today)}</span>
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                <span className="rounded-md bg-red-600 px-3 py-1 text-xs font-black uppercase tracking-wider text-white shadow-sm shadow-red-600/30">
+                  ABC ENGLISH · GIẢNG VIÊN
+                </span>
+                <span className="rounded-full bg-amber-400 text-slate-950 px-3 py-1 text-xs font-black shadow-sm">
+                  ⭐ IELTS 8.0+ QUALITY
+                </span>
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200 border border-white/20 backdrop-blur-xs">
+                  <span className="size-2 inline-block rounded-full bg-emerald-400 animate-pulse mr-1.5 align-middle" />
+                  {dmy(today)}
+                </span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Xin chào, {user.name} 👋</h1>
-              <p className="mt-2 text-blue-100 text-sm max-w-xl">Chúc bạn có những giờ dạy tràn đầy năng lượng và niềm vui cùng học viên!</p>
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
+                Xin chào, {user.name} 👋
+              </h1>
+              <p className="mt-2 text-slate-300 text-sm md:text-base max-w-xl leading-relaxed">
+                Hôm nay bạn có <b className="text-amber-400 font-extrabold">{todaySessions.length} buổi dạy</b>. Chúc bạn có những giờ giảng dạy tràn đầy năng lượng, truyền cảm hứng cho học viên!
+              </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2.5">
               <LinkBtn v="line" href="#/app/timetable"><i className="fa-solid fa-calendar-days mr-1.5" aria-hidden /> Xem lịch dạy</LinkBtn>
-              <LinkBtn v="warn" href="#/app/attendance"><i className="fa-solid fa-clipboard-check mr-1.5" aria-hidden /> Điểm danh</LinkBtn>
+              <LinkBtn v="pri" href="#/app/attendance"><i className="fa-solid fa-clipboard-check mr-1.5" aria-hidden /> Điểm danh buổi học</LinkBtn>
             </div>
           </div>
-          <div className="pointer-events-none absolute -right-10 -bottom-10 size-60 rounded-full bg-white/10 blur-2xl" />
+          <div className="pointer-events-none absolute -right-10 -bottom-10 size-64 rounded-full bg-red-600/10 blur-3xl" />
+          <div className="pointer-events-none absolute top-0 right-1/4 size-40 rounded-full bg-amber-400/15 blur-2xl" />
         </div>
-        <H3>Các buổi dạy sắp tới</H3>
-        <Table head={['Ngày', 'Giờ', 'Lớp', 'Phòng', 'Buổi']} rows={mine.map((s) => <tr key={s.id}><td>{dmy(s.date)} {s.date === today && <Badge t="Hôm nay" />}</td><td>{s.start}-{s.end}</td><td>{by(db, 'classes', s.classId).code}</td><td>{by(db, 'rooms', s.roomId).name}</td><td>{s.no}</td></tr>)} />
+
+        <div className="mb-4 flex items-center justify-between">
+          <H3><i className="fa-solid fa-chalkboard-user text-red-600" aria-hidden /> Các buổi dạy sắp tới</H3>
+          <LinkBtn v="ghost" sm href="#/app/timetable">Xem toàn bộ lịch dạy →</LinkBtn>
+        </div>
+        <Table head={['Ngày', 'Giờ', 'Lớp', 'Phòng', 'Buổi', 'Thao tác']} rows={mine.map((s) => (
+          <tr key={s.id}>
+            <td>{dmy(s.date)} {s.date === today && <Badge t="Hôm nay" />}</td>
+            <td><span className="font-semibold text-blue-700">{s.start}-{s.end}</span></td>
+            <td><b className="text-slate-900">{by(db, 'classes', s.classId).code}</b></td>
+            <td><span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">{by(db, 'rooms', s.roomId).name}</span></td>
+            <td>Buổi {s.no}</td>
+            <td>
+              <LinkBtn v="ghost" sm href="#/app/attendance">
+                <i className="fa-solid fa-clipboard-check text-red-600 mr-1" /> Điểm danh
+              </LinkBtn>
+            </td>
+          </tr>
+        ))} />
       </>
     );
   }
+
   const rev = db.payments.filter((p) => p.type === 'Thu' && p.date.startsWith(month)).reduce((s, p) => s + p.amount, 0);
   const debt = db.enrollments.filter((e) => R.COLLECTIBLE.includes(e.status)).reduce((s, e) => s + R.due(db, e), 0);
+  const pendingRequests = db.requests.filter((r) => r.status === 'Chờ duyệt').length;
+
   const stat = [
-    ['Lớp đang học', db.classes.filter((c) => c.status === 'Đang học').length, 'fa-chalkboard-user', 'from-blue-500 to-indigo-600', 'bg-blue-50 text-blue-700'],
-    ['Lớp mở đăng ký', db.classes.filter((c) => c.status === 'Mở đăng ký').length, 'fa-bullhorn', 'from-amber-400 to-orange-500', 'bg-amber-50 text-amber-700'],
-    ['Học viên đang học', db.enrollments.filter((e) => e.status === 'Đã xác nhận').length, 'fa-user-graduate', 'from-emerald-400 to-teal-500', 'bg-emerald-50 text-emerald-700'],
-    ['Thu trong tháng', rev, 'fa-sack-dollar', 'from-emerald-500 to-green-600', 'bg-green-50 text-green-700'],
-    ['Học phí còn nợ', debt, 'fa-hourglass-half', 'from-orange-400 to-rose-500', 'bg-rose-50 text-rose-700'],
-    ['Yêu cầu chờ duyệt', db.requests.filter((r) => r.status === 'Chờ duyệt').length, 'fa-envelope-open-text', 'from-violet-500 to-purple-600', 'bg-purple-50 text-purple-700'],
+    { label: 'Lớp đang học', val: db.classes.filter((c) => c.status === 'Đang học').length, icon: 'fa-chalkboard-user', accent: 'border-t-4 border-t-blue-600', iconBg: 'bg-blue-600 text-white shadow-blue-600/30', href: '#/app/classes' },
+    { label: 'Lớp mở tuyển sinh', val: db.classes.filter((c) => c.status === 'Mở đăng ký').length, icon: 'fa-bullhorn', accent: 'border-t-4 border-t-amber-500', iconBg: 'bg-amber-500 text-slate-950 shadow-amber-500/30', href: '#/app/classes' },
+    { label: 'Học viên đang học', val: db.enrollments.filter((e) => e.status === 'Đã xác nhận').length, icon: 'fa-user-graduate', accent: 'border-t-4 border-t-red-600', iconBg: 'bg-red-600 text-white shadow-red-600/30', href: '#/app/students' },
+    { label: 'Thu trong tháng', val: rev, isVnd: true, icon: 'fa-sack-dollar', accent: 'border-t-4 border-t-emerald-600', iconBg: 'bg-emerald-600 text-white shadow-emerald-600/30', href: '#/app/payments' },
+    { label: 'Học phí còn nợ', val: debt, isVnd: true, icon: 'fa-hourglass-half', accent: 'border-t-4 border-t-rose-500', iconBg: 'bg-rose-500 text-white shadow-rose-500/30', href: '#/app/enrollments' },
+    { label: 'Yêu cầu chờ duyệt', val: pendingRequests, icon: 'fa-envelope-open-text', accent: 'border-t-4 border-t-purple-600', iconBg: 'bg-purple-600 text-white shadow-purple-600/30', badge: pendingRequests > 0, href: '#/app/requests' },
   ];
+
   const risk = db.classes.filter((c) => c.status === 'Mở đăng ký'), ts = db.sessions.filter((s) => s.date === today).sort((a, b) => a.start.localeCompare(b.start));
+
   return (
     <>
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 p-6 md:p-8 text-white shadow-lg mb-8">
+      {/* Banner Quản trị viên & Nhân viên */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 p-6 md:p-8 text-white shadow-xl mb-6 border border-blue-900/40">
         <div className="relative z-10 flex flex-wrap items-center justify-between gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1 text-xs font-semibold backdrop-blur-xs text-blue-100 mb-3 border border-white/20">
-              <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>{ROLE[user.role]} · {dmy(today)}</span>
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <span className="rounded-md bg-red-600 px-3 py-1 text-xs font-black uppercase tracking-wider text-white shadow-sm shadow-red-600/30">
+                ABC ENGLISH · HỆ THỐNG ĐÀO TẠO
+              </span>
+              <span className="rounded-full bg-amber-400 text-slate-950 px-3 py-1 text-xs font-black shadow-sm tracking-wide">
+                ⭐ CAM KẾT CHUẨN ĐẦU RA BẰNG VĂN BẢN
+              </span>
+              <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-slate-200 border border-white/20 backdrop-blur-xs">
+                ⚡ SĨ SỐ ≤ 15 HV/LỚP
+              </span>
             </div>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">Xin chào, {user.name} 👋</h1>
-            <p className="mt-2 text-blue-100 text-sm md:text-base max-w-xl">
-              Hôm nay trung tâm có <b>{db.sessions.filter((s) => s.date === today).length} buổi học</b>. Chúc bạn một ngày làm việc tràn đầy năng lượng và hiệu quả!
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-white flex items-center gap-2">
+              Xin chào, {user.name} 👋
+            </h1>
+            <p className="mt-2 text-slate-300 text-sm md:text-base max-w-2xl leading-relaxed">
+              Hôm nay hệ thống có <b className="text-amber-400 font-extrabold">{ts.length} buổi học</b> đang vận hành, <b className="text-white font-extrabold">{risk.length} lớp</b> đang tuyển sinh, và <b className="text-rose-400 font-extrabold">{pendingRequests} yêu cầu</b> chờ phê duyệt.
             </p>
           </div>
-          <div className="flex flex-wrap gap-2.5">
-            <LinkBtn v="line" href="#/app/classes" className="backdrop-blur-xs"><i className="fa-solid fa-chalkboard-user mr-1.5" aria-hidden /> Xem lớp học</LinkBtn>
-            <LinkBtn v="warn" href="#/app/requests"><i className="fa-solid fa-envelope-open-text mr-1.5" aria-hidden /> Yêu cầu chờ duyệt</LinkBtn>
+          <div className="flex flex-wrap items-center gap-2.5">
+            {R.can(user, 'klass') && (
+              <Btn v="pri" onClick={() => openModal(<NewClassForm />)}>
+                <i className="fa-solid fa-plus mr-1.5" aria-hidden /> Tạo lớp mới
+              </Btn>
+            )}
+            <LinkBtn v="line" href="#/app/classes" className="backdrop-blur-xs">
+              <i className="fa-solid fa-chalkboard-user mr-1.5" aria-hidden /> Lớp học
+            </LinkBtn>
+            <LinkBtn v="warn" href="#/app/requests">
+              <i className="fa-solid fa-bell mr-1.5" aria-hidden /> Chờ duyệt ({pendingRequests})
+            </LinkBtn>
           </div>
         </div>
-        <div className="pointer-events-none absolute -right-10 -bottom-10 size-64 rounded-full bg-white/10 blur-2xl" />
-        <div className="pointer-events-none absolute top-0 right-1/4 size-32 rounded-full bg-amber-400/20 blur-xl" />
+        <div className="pointer-events-none absolute -right-10 -bottom-10 size-64 rounded-full bg-red-600/10 blur-3xl" />
+        <div className="pointer-events-none absolute top-0 right-1/4 size-40 rounded-full bg-amber-400/15 blur-2xl" />
       </div>
 
-      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
-        {stat.map(([l, v, icon, grad, badgeCls], i) => (
-          <Card key={l} style={{ animationDelay: `${i * 60}ms` }} className="animate-fade-up relative overflow-hidden p-5 group hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-            <div className="flex items-center justify-between mb-3">
-              <span className={`grid size-9 place-items-center rounded-xl text-base shadow-2xs ${badgeCls}`}><i className={`fa-solid ${icon}`} aria-hidden /></span>
-              <span className={`h-1.5 w-8 rounded-full bg-gradient-to-r ${grad}`} />
-            </div>
-            <span className="text-xs font-medium text-slate-500 block truncate">{l}</span>
-            <b className="font-display block text-2xl md:text-3xl font-extrabold text-slate-900 mt-1 tracking-tight">
-              <CountUp to={v} format={typeof v === 'number' && /thu|nợ/i.test(l) ? vnd : undefined} />
-            </b>
-          </Card>
+      {/* Quick Actions Hub */}
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        {[
+          { label: 'Tạo lớp mới', icon: 'fa-plus', color: 'text-red-700 bg-red-50 hover:bg-red-100/80 border-red-200/80', action: () => openModal(<NewClassForm />), can: R.can(user, 'klass') },
+          { label: 'Đăng ký học viên', icon: 'fa-file-signature', color: 'text-blue-700 bg-blue-50 hover:bg-blue-100/80 border-blue-200/80', href: '#/app/enrollments', can: true },
+          { label: 'Thu học phí', icon: 'fa-credit-card', color: 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100/80 border-emerald-200/80', href: '#/app/payments', can: true },
+          { label: 'Thời khóa biểu', icon: 'fa-calendar-days', color: 'text-amber-800 bg-amber-50 hover:bg-amber-100/80 border-amber-200/80', href: '#/app/timetable', can: true },
+          { label: 'Điểm danh buổi học', icon: 'fa-clipboard-check', color: 'text-indigo-700 bg-indigo-50 hover:bg-indigo-100/80 border-indigo-200/80', href: '#/app/attendance', can: true },
+          { label: 'Tư vấn tuyển sinh', icon: 'fa-bullseye', color: 'text-purple-700 bg-purple-50 hover:bg-purple-100/80 border-purple-200/80', href: '#/app/leads', can: true },
+        ].filter((item) => item.can).map((item) => (
+          item.href ? (
+            <a key={item.label} href={item.href} className={`flex items-center gap-3 rounded-2xl border p-3 font-bold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${item.color}`}>
+              <i className={`fa-solid ${item.icon} text-base md:text-lg`} aria-hidden />
+              <span className="text-xs md:text-sm font-bold tracking-tight text-slate-800">{item.label}</span>
+            </a>
+          ) : (
+            <button key={item.label} type="button" onClick={item.action} className={`flex items-center gap-3 rounded-2xl border p-3 font-bold text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer ${item.color}`}>
+              <i className={`fa-solid ${item.icon} text-base md:text-lg`} aria-hidden />
+              <span className="text-xs md:text-sm font-bold tracking-tight text-slate-800">{item.label}</span>
+            </button>
+          )
         ))}
       </div>
 
+      {/* 6 KPI Cards */}
+      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
+        {stat.map((item, i) => (
+          <a
+            key={item.label}
+            href={item.href}
+            style={{ animationDelay: `${i * 60}ms` }}
+            className={`animate-fade-up relative overflow-hidden rounded-2xl bg-white p-5 border border-slate-200/90 shadow-xs hover:-translate-y-1 hover:shadow-xl transition-all duration-300 block group ${item.accent}`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className={`grid size-10 place-items-center rounded-xl text-base shadow-sm ${item.iconBg}`}>
+                <i className={`fa-solid ${item.icon}`} aria-hidden />
+              </span>
+              {item.badge && item.val > 0 ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-black text-rose-700 animate-pulse">
+                  <span className="size-1.5 rounded-full bg-rose-600" /> Cần duyệt
+                </span>
+              ) : (
+                <i className="fa-solid fa-arrow-right text-xs text-slate-300 group-hover:text-red-600 group-hover:translate-x-1 transition-all" aria-hidden />
+              )}
+            </div>
+            <span className="text-xs font-semibold text-slate-500 block truncate group-hover:text-slate-900 transition-colors">
+              {item.label}
+            </span>
+            <b className="font-display block text-2xl md:text-3xl font-extrabold text-slate-900 mt-1 tracking-tight">
+              <CountUp to={item.val} format={item.isVnd ? vnd : undefined} />
+            </b>
+          </a>
+        ))}
+      </div>
+
+      {/* Main Operational Panels */}
       <div className="grid gap-6 lg:grid-cols-2 mb-8">
-        <div>
-          <H3><i className="fa-solid fa-bullhorn text-blue-600" aria-hidden /> Lớp đang mở đăng ký ({risk.length})</H3>
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs">
+          <div className="mb-4 flex items-center justify-between">
+            <H3><i className="fa-solid fa-bullhorn text-amber-500" aria-hidden /> Lớp đang mở đăng ký ({risk.length})</H3>
+            <LinkBtn v="ghost" sm href="#/app/classes">Tất cả lớp →</LinkBtn>
+          </div>
           <Table head={['Lớp', 'Chi nhánh', 'Khai giảng', 'Đã xác nhận', 'Trạng thái']} rows={risk.map((c) => {
             const n = R.confirmed(db, c.id).length;
             return (
               <tr key={c.id}>
-                <td>{canViewClass(user) ? <a className="font-bold text-blue-600 hover:text-blue-800 transition" href={`#/app/class/${c.id}`}>{c.code}</a> : <b>{c.code}</b>}</td>
+                <td>{canViewClass(user) ? <a className="font-bold text-red-600 hover:text-red-800 transition" href={`#/app/class/${c.id}`}>{c.code}</a> : <b>{c.code}</b>}</td>
                 <td>{by(db, 'branches', c.branchId).name}</td>
                 <td>{dmy(c.startDate)}</td>
                 <td><div className="w-36">{n}/{CFG.minStudents}<Meter v={n} min={CFG.minStudents} /></div></td>
@@ -111,17 +215,42 @@ export function Dashboard() {
             );
           })} />
         </div>
-        <div>
-          <H3><i className="fa-solid fa-calendar-day text-blue-600" aria-hidden /> Buổi học hôm nay ({ts.length})</H3>
+
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs">
+          <div className="mb-4 flex items-center justify-between">
+            <H3><i className="fa-solid fa-calendar-check text-blue-600" aria-hidden /> Buổi học hôm nay ({ts.length})</H3>
+            <LinkBtn v="ghost" sm href="#/app/timetable">Thời khóa biểu →</LinkBtn>
+          </div>
           <Table head={['Giờ', 'Lớp', 'Chi nhánh', 'Phòng', 'Giáo viên']} rows={ts.map((s) => (
             <tr key={s.id}>
-              <td><span className="font-semibold text-blue-600">{s.start}-{s.end}</span></td>
-              <td className="font-bold">{by(db, 'classes', s.classId).code}</td>
+              <td><span className="font-semibold text-blue-700">{s.start}-{s.end}</span></td>
+              <td className="font-bold text-slate-900">{by(db, 'classes', s.classId).code}</td>
               <td>{by(db, 'branches', by(db, 'classes', s.classId).branchId).name}</td>
               <td><span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">{by(db, 'rooms', s.roomId).name}</span></td>
               <td>{by(db, 'teachers', s.teacherId).name}</td>
             </tr>
           ))} />
+        </div>
+      </div>
+
+      {/* Quality Standards Ribbon */}
+      <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-r from-amber-50 via-red-50/40 to-blue-50/40 p-5 shadow-xs">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="grid size-10 place-items-center rounded-xl bg-red-600 text-white font-bold shadow-sm shadow-red-600/30">
+              <i className="fa-solid fa-shield-halved" />
+            </span>
+            <div>
+              <b className="block text-sm font-extrabold text-slate-900 uppercase tracking-wide">Tiêu chuẩn vận hành hệ thống ABC English</b>
+              <p className="text-xs text-slate-600 mt-0.5">Quy chuẩn học vụ & đảm bảo chất lượng cam kết đầu ra cho học viên</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-slate-700">
+            <span className="inline-flex items-center gap-1.5"><i className="fa-solid fa-circle-check text-emerald-600" /> Sĩ số tối đa 15 HV/lớp</span>
+            <span className="inline-flex items-center gap-1.5"><i className="fa-solid fa-circle-check text-emerald-600" /> Tối thiểu 5 HV để mở lớp</span>
+            <span className="inline-flex items-center gap-1.5"><i className="fa-solid fa-circle-check text-emerald-600" /> Đóng ≥ 50% học phí để giữ chỗ</span>
+            <span className="inline-flex items-center gap-1.5"><i className="fa-solid fa-circle-check text-emerald-600" /> Bảo lưu tối đa 60 ngày</span>
+          </div>
         </div>
       </div>
     </>
